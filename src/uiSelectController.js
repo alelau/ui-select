@@ -582,7 +582,12 @@ uis.controller('uiSelectCtrl',
         }
         break;
       case KEY.TAB:
-        if (!ctrl.multiple || ctrl.open) ctrl.select(ctrl.items[ctrl.activeIndex], true);
+        if (!ctrl.multiple || ctrl.open) {
+           //TODO ask may it be configurable?
+           //ctrl.select(ctrl.items[ctrl.activeIndex], true);
+           //Close the dropdown without select the hovered element
+           ctrl.close(true);
+        }
         break;
       case KEY.ENTER:
         if(ctrl.open && (ctrl.tagging.isActivated || ctrl.activeIndex >= 0)){

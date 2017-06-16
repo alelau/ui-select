@@ -1782,7 +1782,7 @@ describe('ui-select tests', function () {
     var searchInput = el.find('.ui-select-search');
 
     setSearchText(el, 'iamvalid');
-    triggerKeydown(searchInput, Key.Tab);
+    triggerKeydown(searchInput, Key.Enter);
 
     //model value defined because it's valid, view value defined as expected
     var validTag = scope.taggingFunc("iamvalid");
@@ -1791,7 +1791,7 @@ describe('ui-select tests', function () {
 
     clickMatch(el);
     setSearchText(el, 'notvalid');
-    triggerKeydown(searchInput, Key.Tab);
+    triggerKeydown(searchInput, Key.Enter);
 
     //model value undefined because it's invalid, view value STILL defined as expected
     expect(scope.selection.selected).toEqual(undefined);
@@ -2546,7 +2546,7 @@ describe('ui-select tests', function () {
       var searchInput = el.find('.ui-select-search');
 
       setSearchText(el, 'iamvalid');
-      triggerKeydown(searchInput, Key.Tab);
+      triggerKeydown(searchInput, Key.Enter);
 
       //model value defined because it's valid, view value defined as expected
       var validTag = scope.taggingFunc("iamvalid");
@@ -2555,7 +2555,7 @@ describe('ui-select tests', function () {
 
       clickMatch(el);
       setSearchText(el, 'notvalid');
-      triggerKeydown(searchInput, Key.Tab);
+      triggerKeydown(searchInput, Key.Enter);
 
       //model value undefined because it's invalid, view value STILL defined as expected
       var invalidTag = scope.taggingFunc("notvalid");
