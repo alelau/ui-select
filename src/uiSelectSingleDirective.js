@@ -131,7 +131,10 @@ uis.directive('uiSelectSingle', ['$timeout','$compile', function($timeout, $comp
           return;
         }
 
-        $select.activate(focusser.val()); //User pressed some regular key, so we pass it to the search input
+        //If the search is disabled, we don't want to filter the match (Needed because our input is never really hidden to handle events such as ESC ENTER,...) when the search is disabled
+        var focusserVal = (scope.searchEnabled) ? focusser.val() : '';
+        $select.activate(focusserVal); //User pressed some regular key, so we pass it to the search input
+
         focusser.val('');
         scope.$digest();
 
