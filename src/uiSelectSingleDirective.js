@@ -80,7 +80,11 @@ uis.directive('uiSelectSingle', ['$timeout','$compile', function($timeout, $comp
       });
 
       scope.$on('uis:activate', function () {
-        focusser.prop('disabled', true); //Will reactivate it on .close()
+        //fix IE and firefox bug on tab
+        focusser[0].blur();
+        $timeout(function () {
+          focusser.prop('disabled', true); //Will reactivate it on .close()
+        },10,false);
       });
 
       //Idea from: https://github.com/ivaynberg/select2/blob/79b5bf6db918d7560bdd959109b7bcfb47edaf43/select2.js#L1954
