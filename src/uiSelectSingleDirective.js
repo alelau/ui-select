@@ -102,9 +102,15 @@ uis.directive('uiSelectSingle', ['$timeout','$compile', function($timeout, $comp
         });
       });
       focusser.bind("blur", function(){
-        scope.$evalAsync(function(){
+        //When using $evalAsync it can happen that the model is not directly updated
+        if(!scope.$$phase && !scope.$root.$$phase) {
+          scope.$apply(function(){
+            $select.focus = false;
+          });
+        }
+        else{
           $select.focus = false;
-        });
+        }
       });
       focusser.bind("keydown", function(e){
 
