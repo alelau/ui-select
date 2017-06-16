@@ -1050,11 +1050,13 @@ describe('ui-select tests', function () {
 
     it('should create items group', function () {
       var el = createUiSelect();
+      openDropdown(el);
       expect(el.find('.ui-select-choices-group').length).toBe(3);
     });
 
     it('should show label before each group', function () {
       var el = createUiSelect();
+      openDropdown(el);
       expect(el.find('.ui-select-choices-group .ui-select-choices-group-label').map(function () {
         return this.textContent;
       }).toArray()).toEqual(['Foo', 'bar', 'Baz']);
@@ -1064,6 +1066,7 @@ describe('ui-select tests', function () {
       var el = createUiSelect();
       el.scope().$select.search = 'd';
       scope.$digest();
+      openDropdown(el);
 
       expect(el.find('.ui-select-choices-group .ui-select-choices-group-label').map(function () {
         return this.textContent;
@@ -1100,6 +1103,7 @@ describe('ui-select tests', function () {
     }
     it("should extract group value through function", function () {
       var el = createUiSelect();
+      openDropdown(el);
       expect(el.find('.ui-select-choices-group .ui-select-choices-group-label').map(function () {
         return this.textContent;
       }).toArray()).toEqual(['odd', 'even']);
@@ -1119,6 +1123,7 @@ describe('ui-select tests', function () {
     }
     it("should sort groups using filter", function () {
       var el = createUiSelect();
+      openDropdown(el);
       expect(el.find('.ui-select-choices-group .ui-select-choices-group-label').map(function () {
         return this.textContent;
       }).toArray()).toEqual(["Foo", "Baz", "bar"]);
@@ -1139,6 +1144,7 @@ describe('ui-select tests', function () {
     }
     it("should sort groups using filter", function () {
       var el = createUiSelect();
+      openDropdown(el);
       expect(el.find('.ui-select-choices-group .ui-select-choices-group-label').map(function () {
         return this.textContent;
       }).toArray()).toEqual(["Foo"]);
