@@ -525,7 +525,7 @@ uis.controller('uiSelectCtrl',
   ctrl.sizeSearchInput = function() {
 
     var input = ctrl.searchInput[0],
-        container = ctrl.$element[0],
+      container = ctrl.$element[0],
         calculateContainerWidth = function() {
           // Return the container width only if the search input is visible
           return container.clientWidth * !!input.offsetParent;
@@ -534,13 +534,19 @@ uis.controller('uiSelectCtrl',
           if (containerWidth === 0) {
             return false;
           }
-          var inputWidth = containerWidth - input.offsetLeft;
-          if (inputWidth < 50) inputWidth = containerWidth;
+
+          /*
+           * FACTOR 8 - 2017-06-21 - Hugo (made by Florent Desmis on the 2015-10-23)
+           * Calculate the free space based on the tags container width
+           * We add a delta of 40px in the calculation in order to align the width of the input to our styles
+           */
+          var lastTag = ctrl.searchInput.parent().find('.ui-select-toggle.multi-select-toggle').children().last(); // Update
+          var inputWidth = containerWidth - (lastTag.outerWidth(true) + lastTag.position().left) - 40; // Updatedate
+          if (inputWidth < 50) inputWidth = containerWidth - 40; // Update
           ctrl.searchInput.css('width', inputWidth+'px');
           return true;
         };
 
-    ctrl.searchInput.css('width', '10px');
     $timeout(function() { //Give tags time to render correctly
       if (sizeWatch === null && !updateIfVisible(calculateContainerWidth())) {
         sizeWatch = $scope.$watch(function() {

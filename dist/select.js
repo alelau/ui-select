@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.19.9 - 2017-06-16T12:34:06.675Z
+ * Version: 0.19.9 - 2017-06-21T09:21:46.354Z
  * License: MIT
  */
 
@@ -805,7 +805,7 @@ uis.controller('uiSelectCtrl',
   ctrl.sizeSearchInput = function() {
 
     var input = ctrl.searchInput[0],
-        container = ctrl.$element[0],
+      container = ctrl.$element[0],
         calculateContainerWidth = function() {
           // Return the container width only if the search input is visible
           return container.clientWidth * !!input.offsetParent;
@@ -814,13 +814,19 @@ uis.controller('uiSelectCtrl',
           if (containerWidth === 0) {
             return false;
           }
-          var inputWidth = containerWidth - input.offsetLeft;
-          if (inputWidth < 50) inputWidth = containerWidth;
+
+          /*
+           * FACTOR 8 - 2017-06-21 - Hugo (made by Florent Desmis on the 2015-10-23)
+           * Calculate the free space based on the tags container width
+           * We add a delta of 40px in the calculation in order to align the width of the input to our styles
+           */
+          var lastTag = ctrl.searchInput.parent().find('.ui-select-toggle.multi-select-toggle').children().last(); // Update
+          var inputWidth = containerWidth - (lastTag.outerWidth(true) + lastTag.position().left) - 40; // Updatedate
+          if (inputWidth < 50) inputWidth = containerWidth - 40; // Update
           ctrl.searchInput.css('width', inputWidth+'px');
           return true;
         };
 
-    ctrl.searchInput.css('width', '10px');
     $timeout(function() { //Give tags time to render correctly
       if (sizeWatch === null && !updateIfVisible(calculateContainerWidth())) {
         sizeWatch = $scope.$watch(function() {
@@ -1515,7 +1521,7 @@ uis.directive('uiSelectMatch', ['uiSelectConfig', function(uiSelectConfig) {
   }
 }]);
 
-uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelectMinErr, $timeout) {
+uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout','$window', function(uiSelectMinErr, $timeout, $window) {
   return {
     restrict: 'EA',
     require: ['^uiSelect', '^ngModel'],
@@ -1601,6 +1607,30 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
       //Input that will handle focus
       $select.focusInput = $select.searchInput;
+
+      /*
+       * FACTOR 8 - 2015-10-23 - Florent
+       * Add watchers in order to resize the input if needed
+       * Add a resize event to resize the input
+       */
+      var jWindow = angular.element($window);
+
+      jWindow.on('resize',$select.sizeSearchInput);
+
+      scope.$watch(function(){
+        return element.parent().outerWidth();
+      }, function() {
+        $timeout(function(){
+          $select.sizeSearchInput();
+        });
+      });
+
+      scope.$on('$destroy',function(){
+        jWindow.off('resize',$select.sizeSearchInput);
+      });
+      /*
+       * END OF 2015-10-23
+       */
 
       //Properly check for empty if set to multiple
       ngModel.$isEmpty = function(value) {
@@ -1709,11 +1739,6 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
       scope.$on('uis:activate', function () {
         $selectMultiple.activeMatchIndex = -1;
-      });
-
-      scope.$watch('$select.disabled', function(newValue, oldValue) {
-        // As the search input field may now become visible, it may be necessary to recompute its size
-        if (oldValue && !newValue) $select.sizeSearchInput();
       });
 
       $select.searchInput.on('keydown', function(e) {
