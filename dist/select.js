@@ -1,7 +1,7 @@
 /*!
  * ui-select
  * http://github.com/angular-ui/ui-select
- * Version: 0.19.9 - 2017-06-21T13:37:16.662Z
+ * Version: 0.19.12 - 2017-06-22T07:17:21.902Z
  * License: MIT
  */
 
@@ -776,7 +776,7 @@ uis.controller('uiSelectCtrl',
           }
 
           if (!isLocked && lockedItemIndex > -1) {
-            delete item._uiSelectChoiceLocked;
+            delete item._uiSelectChoiceLocked; // remove the specific locked attribute
             lockedItems.splice(lockedItemIndex, 1);
           }
         }
@@ -789,6 +789,10 @@ uis.controller('uiSelectCtrl',
           var isLocked = false,
             item = ctrl.selected[itemIndex];
 
+          /**
+           * For backwards compatibility with the kit, the attribute _uiSelectChoiceLocked was reverted back.
+           * Because now there is no dedicated api to easily know if an item is locked or not
+           */
           if (item) {
             if (itemScope) {
               item._uiSelectChoiceLocked = isLocked = !!(itemScope.$eval(ctrl.lockChoiceExpression));
@@ -824,7 +828,8 @@ uis.controller('uiSelectCtrl',
              * We add a delta of 40px in the calculation in order to align the width of the input to our styles
              */
             var lastTag = ctrl.searchInput.parent().find('.ui-select-toggle.multi-select-toggle').children().last(); // Update
-            var inputWidth = containerWidth - (lastTag.outerWidth(true) + lastTag.position().left) - 40; // Updatedate
+            var lastTagWidth = lastTag ? (lastTag.outerWidth(true) + lastTag.position().left) : 0;
+            var inputWidth = containerWidth - lastTagWidth - 40; // Updatedate
             if (inputWidth < 50) inputWidth = containerWidth - 40; // Update
             ctrl.searchInput.css('width', inputWidth + 'px');
             return true;
