@@ -1,4 +1,4 @@
-uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelectMinErr, $timeout) {
+uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout','$window', function(uiSelectMinErr, $timeout, $window) {
   return {
     restrict: 'EA',
     require: ['^uiSelect', '^ngModel'],
@@ -84,6 +84,30 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
       //Input that will handle focus
       $select.focusInput = $select.searchInput;
+
+      /*
+       * FACTOR 8 - 2015-10-23 - Florent
+       * Add watchers in order to resize the input if needed
+       * Add a resize event to resize the input
+       */
+      var jWindow = angular.element($window);
+
+      jWindow.on('resize',$select.sizeSearchInput);
+
+      scope.$watch(function(){
+        return element.parent().outerWidth();
+      }, function() {
+        $timeout(function(){
+          $select.sizeSearchInput();
+        });
+      });
+
+      scope.$on('$destroy',function(){
+        jWindow.off('resize',$select.sizeSearchInput);
+      });
+      /*
+       * END OF 2015-10-23
+       */
 
       //Properly check for empty if set to multiple
       ngModel.$isEmpty = function(value) {
@@ -192,11 +216,6 @@ uis.directive('uiSelectMultiple', ['uiSelectMinErr','$timeout', function(uiSelec
 
       scope.$on('uis:activate', function () {
         $selectMultiple.activeMatchIndex = -1;
-      });
-
-      scope.$watch('$select.disabled', function(newValue, oldValue) {
-        // As the search input field may now become visible, it may be necessary to recompute its size
-        if (oldValue && !newValue) $select.sizeSearchInput();
       });
 
       $select.searchInput.on('keydown', function(e) {
