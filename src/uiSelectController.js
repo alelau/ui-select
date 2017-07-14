@@ -548,7 +548,7 @@ uis.controller('uiSelectCtrl',
              * We add a delta of 40px in the calculation in order to align the width of the input to our styles
              */
             var lastTag = ctrl.searchInput.parent().find('.ui-select-toggle.multi-select-toggle').children().last(); // Update
-            var lastTagWidth = lastTag ? (lastTag.outerWidth(true) + lastTag.position().left) : 0;
+            var lastTagWidth = (lastTag && lastTag.position()) ? (lastTag.outerWidth(true) + lastTag.position().left) : 0;
             var inputWidth = containerWidth - lastTagWidth - 40; // Updatedate
             if (inputWidth < 50) inputWidth = containerWidth - 40; // Update
             ctrl.searchInput.css('width', inputWidth + 'px');
