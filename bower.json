@@ -1,5 +1,6 @@
 {
-  "name": "angular-ui-select",  
+  "name": "f8-angular-ui-select",
+  "version": "0.19.10",
   "homepage": "https://github.com/angular-ui/ui-select",
   "authors": [
     "AngularUI"
